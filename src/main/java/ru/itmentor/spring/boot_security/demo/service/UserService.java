@@ -1,5 +1,6 @@
 package ru.itmentor.spring.boot_security.demo.service;
 
+import ru.itmentor.spring.boot_security.demo.model.AddRequest;
 import ru.itmentor.spring.boot_security.demo.model.Role;
 import ru.itmentor.spring.boot_security.demo.model.User;
 
@@ -9,7 +10,7 @@ import java.util.Set;
 
 public interface UserService {
 
-    User addUser(User user);
+    User addUser(AddRequest addRequest);
 
     void delete(User user);
 

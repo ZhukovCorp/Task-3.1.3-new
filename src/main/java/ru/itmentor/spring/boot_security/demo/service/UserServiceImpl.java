@@ -1,8 +1,10 @@
 package ru.itmentor.spring.boot_security.demo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.itmentor.spring.boot_security.demo.Repository.UserRepository;
+import ru.itmentor.spring.boot_security.demo.model.AddRequest;
 import ru.itmentor.spring.boot_security.demo.model.Role;
 import ru.itmentor.spring.boot_security.demo.model.User;
 import java.util.HashSet;
@@ -15,14 +17,23 @@ import java.util.Set;
 public class UserServiceImpl implements UserService  {
     private final UserRepository userRepository;
 
+    private final PasswordEncoder passwordEncoder;
+
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
     @Override
-    public User addUser(User user) {
+    public User addUser(AddRequest addRequest) {
+        addRequest.setPassword(passwordEncoder.encode(addRequest.getPassword()));
+        User user = new User();
+        user.setPassword(addRequest.getPassword());
+        user.setName(addRequest.getName());
+        user.setAge(addRequest.getAge());
+        user.setLastName(addRequest.getLastName());
         User savedUser = userRepository.saveAndFlush(user);
         return savedUser;
     }

@@ -1,9 +1,12 @@
 package ru.itmentor.spring.boot_security.demo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
 import java.util.Set;
+
+import static javax.persistence.FetchType.EAGER;
 
 @Entity
 @Table(name = "roles")
@@ -16,6 +19,7 @@ public class Role implements GrantedAuthority {
     @Column
     private String roleName;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "roles")
     private Set<User> users;
 

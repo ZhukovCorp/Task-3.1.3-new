@@ -1,14 +1,18 @@
 package ru.itmentor.spring.boot_security.demo.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import ru.itmentor.spring.boot_security.demo.model.AddRequest;
 import ru.itmentor.spring.boot_security.demo.model.User;
 import ru.itmentor.spring.boot_security.demo.service.RolesService;
 import ru.itmentor.spring.boot_security.demo.service.UserService;
 import org.springframework.ui.Model;
 
+import java.util.List;
 import java.util.Set;
 
 @Controller
@@ -16,55 +20,28 @@ import java.util.Set;
 public class AdminController {
 
     private final UserService userService;
-    private final RolesService rolesService;
+
 
     @Autowired
-    public AdminController(UserService userService, RolesService rolesService) {
+    public AdminController(UserService userService) {
         this.userService = userService;
-        this.rolesService = rolesService;
     }
 
-    @GetMapping("/signup")
-    public String showSignUpForm(User user, Model model) {
-        model.addAttribute("roles", rolesService.getAllRoles());
-        return "add-user";
-    }
-
-    @PostMapping("/adduser")
-    public String addUser(@ModelAttribute("user") User user,
-                          @RequestParam("roles") Set<String> values) {
-        userService.addUser(user);
-        return "redirect:/admin";
+    @PostMapping(value = "/adduser")
+    public ResponseEntity<User> addUser(@RequestBody AddRequest addRequest) {
+        User user = userService.addUser(addRequest);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @GetMapping("")
-    public String showUserList(Model model) {
-        model.addAttribute("users", userService.getAll());
-        return "admin";
+    public ResponseEntity<List<User>> showUserList() {
+        List<User> users = userService.getAll();
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
-    @GetMapping("/edit/{id}")
-    public String showUpdateForm(@PathVariable("id") int id, Model model) {
-        User user = userService.findUserById(id);
-        model.addAttribute("roles", rolesService.getAllRoles());
-        model.addAttribute("user", user);
-        return "update-user";
-    }
-
-    @PostMapping("/update/{id}")
-    public String updateUser(@PathVariable("id") int id, User user,
-                             BindingResult result, Model model) {
-        if (result.hasErrors()) {
-            user.setId(id);
-            return "update-user";
-        }
-        userService.addUser(user);
-        return "redirect:/admin";
-    }
-
-    @GetMapping("/delete/{id}")
-    public String deleteUser(@PathVariable("id") int id, Model model) {
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> deleteUser(@PathVariable("id") int id) {
         userService.deleteUserById(id);
-        return "redirect:/admin";
+        return new ResponseEntity<>("Пользователь с ID " + id + " удален", HttpStatus.OK);
     }
 }

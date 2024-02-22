@@ -1,6 +1,7 @@
 package ru.itmentor.spring.boot_security.demo.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -8,6 +9,8 @@ import javax.persistence.*;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+
+import static javax.persistence.FetchType.EAGER;
 
 @Entity
 @Table(name = "users")
@@ -25,18 +28,16 @@ public class User implements UserDetails {
     private int age;
     @Column
     private String password;
-    @ManyToMany
+
+    @JsonIgnore
+    @ManyToMany()
     private Set<Role> roles = new HashSet<>();
 
-//    private User user;
-//
-//    public User(User user) {
-//        this.user = user;
-//    }
-//
+
     public User() {
 
     }
+
 
     public void setPassword(String password) {
         this.password = password;
