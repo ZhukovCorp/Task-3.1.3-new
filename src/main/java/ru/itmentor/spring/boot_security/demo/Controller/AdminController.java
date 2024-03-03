@@ -15,7 +15,7 @@ import org.springframework.ui.Model;
 import java.util.List;
 import java.util.Set;
 
-@Controller
+@RestController
 @RequestMapping("/admin")
 public class AdminController {
 
@@ -42,6 +42,6 @@ public class AdminController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable("id") int id) {
         userService.deleteUserById(id);
-        return new ResponseEntity<>("Пользователь с ID " + id + " удален", HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

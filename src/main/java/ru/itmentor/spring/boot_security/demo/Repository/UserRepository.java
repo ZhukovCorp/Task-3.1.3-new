@@ -11,6 +11,5 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Integer> {
     Role getRoleById(int id);
 
-    @EntityGraph(attributePaths = "roles")
     Optional<User> findByName(String name);
 }
